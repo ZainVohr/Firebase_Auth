@@ -28,8 +28,8 @@ const SignUp = () => {
 
       // console.log(user, "useeeer");
       // console.log(user.accessToken, "tokeeen");
-      localStorage.setItem("token", user.accessToken);
-      localStorage.setItem("user", JSON.stringify(user));
+      // localStorage.setItem("token", user.accessToken);
+      // localStorage.setItem("user", JSON.stringify(user));
       navigate("/login");
     } catch (error) {
       toast.error(error);

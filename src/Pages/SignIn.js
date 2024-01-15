@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, Spin } from "antd";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { toast } from "react-toastify";
@@ -8,6 +8,18 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 const SignIn = () => {
   const navigate = useNavigate();
   const [userCredentials, setuserCredentials] = useState([]);
+  const [loading, setloading] = useState(true);
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    // setloading(true);
+    // if (loading) {
+    //   return <Spin size="large" />;
+    // }
+    if (token) {
+      navigate("/");
+    }
+  });
+  // setloading(false);
   const onFinish = async (values) => {
     try {
       console.log("Received values of form: ", values);
