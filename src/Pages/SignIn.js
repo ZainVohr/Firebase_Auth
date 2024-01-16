@@ -5,7 +5,18 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { toast } from "react-toastify";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import GoogleButton from "react-google-button";
+import { UserAuth } from "../Context/AuthContext";
 const SignIn = () => {
+  const { googleSignIn } = UserAuth();
+  const handleGoogleSignIn = async () => {
+    try {
+      await googleSignIn();
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const navigate = useNavigate();
   const [userCredentials, setuserCredentials] = useState([]);
   const [loading, setloading] = useState(true);
@@ -21,24 +32,43 @@ const SignIn = () => {
   });
   // setloading(false);
   const onFinish = async (values) => {
+    // try {
+    //   console.log("Received values of form: ", values);
+    //    signInWithEmailAndPassword(auth, values.email, values.password)
+    //     .then((user) => {
+    //       console.log(user);
+    //       setuserCredentials(user);
+    //       localStorage.setItem("token", user.user.accessToken);
+    //       localStorage.setItem("user", JSON.stringify(user));
+    //       console.log(userCredentials, "userstte");
+    //       navigate("/");
+    //       // console.log(userCredentials.user.accessToken, "asdsad");
+    //     })
+    //     .catch((error) => {
+    //       toast.error("Invalid Credentials");
+    //       console.log(error);
+    //     });
+    //   // const user = userCredentials.user;
+    // } catch (error) {
+    //   console.log(error);
+    // }
     try {
       console.log("Received values of form: ", values);
-      signInWithEmailAndPassword(auth, values.email, values.password)
-        .then((user) => {
-          console.log(user);
-          setuserCredentials(user);
-          localStorage.setItem("token", user.user.accessToken);
-          localStorage.setItem("user", JSON.stringify(user));
-          console.log(userCredentials, "userstte");
-          navigate("/");
-          // console.log(userCredentials.user.accessToken, "asdsad");
-        })
-        .catch((error) => {
-          toast.error("Invalid Credentials");
-          console.log(error);
-        });
-      // const user = userCredentials.user;
+
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+
+      console.log(userCredentials);
+      setuserCredentials(userCredentials);
+      localStorage.setItem("token", userCredentials.user.accessToken);
+      localStorage.setItem("user", JSON.stringify(userCredentials));
+      console.log(userCredentials, "userstte");
+      navigate("/");
     } catch (error) {
+      toast.error("Invalid Credentials");
       console.log(error);
     }
   };
@@ -107,6 +137,9 @@ const SignIn = () => {
           >
             Log in
           </Button>
+          <div className="googlebtn">
+            <GoogleButton onClick={handleGoogleSignIn} />
+          </div>
           Or <Link to="/signup">register now!</Link>
         </Form.Item>
       </Form>
